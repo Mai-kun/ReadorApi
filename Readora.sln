@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readora.API", "Readora.API\Readora.API.csproj", "{97208C1E-C1C0-43A2-BC37-188ACEEBA15A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readora.Models", "Readora.Models\Readora.Models.csproj", "{537DCB9D-4FD1-41E7-9E84-ADE95B134C45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readora.DataBase", "Readora.DataBase\Readora.DataBase.csproj", "{1A7774DB-4217-46D0-B8FA-AB4E819A22D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readora.DataBase.Repositories", "Readora.DataBase.Repositories\Readora.DataBase.Repositories.csproj", "{AC0460CE-C2ED-49C3-AB42-9D54E017F18B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Readora.Services", "Readora.Services\Readora.Services.csproj", "{0DDDC598-3C3B-4EE0-A603-EEFF7073A631}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{97208C1E-C1C0-43A2-BC37-188ACEEBA15A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97208C1E-C1C0-43A2-BC37-188ACEEBA15A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97208C1E-C1C0-43A2-BC37-188ACEEBA15A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97208C1E-C1C0-43A2-BC37-188ACEEBA15A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{537DCB9D-4FD1-41E7-9E84-ADE95B134C45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{537DCB9D-4FD1-41E7-9E84-ADE95B134C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{537DCB9D-4FD1-41E7-9E84-ADE95B134C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{537DCB9D-4FD1-41E7-9E84-ADE95B134C45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A7774DB-4217-46D0-B8FA-AB4E819A22D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A7774DB-4217-46D0-B8FA-AB4E819A22D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A7774DB-4217-46D0-B8FA-AB4E819A22D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A7774DB-4217-46D0-B8FA-AB4E819A22D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC0460CE-C2ED-49C3-AB42-9D54E017F18B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC0460CE-C2ED-49C3-AB42-9D54E017F18B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC0460CE-C2ED-49C3-AB42-9D54E017F18B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC0460CE-C2ED-49C3-AB42-9D54E017F18B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DDDC598-3C3B-4EE0-A603-EEFF7073A631}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DDDC598-3C3B-4EE0-A603-EEFF7073A631}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DDDC598-3C3B-4EE0-A603-EEFF7073A631}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DDDC598-3C3B-4EE0-A603-EEFF7073A631}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

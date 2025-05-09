@@ -1,0 +1,9 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ReadorAPI" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" include_all_content_for_self_extract="true" include_native_libs_for_self_extract="true" platform="Any CPU" produce_single_file="true" runtime="win-x64" target_folder="$PROJECT_DIR$/Readora.API/bin/Release/publish" target_framework="net9.0" uuid_high="-7556886111000181854" uuid_low="-4884408286403911334" />
+    <method v="2">
+      <option name="Build Solution" enabled="true" />
+      <option name="Publish Solution" enabled="true" />
+    </method>
+  </configuration>
+</component>
