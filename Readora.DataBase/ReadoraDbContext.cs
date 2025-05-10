@@ -23,6 +23,7 @@ public class ReadoraDbContext : DbContext, IDbWriter, IDbReader, IUnitOfWork
     public DbSet<Genre> Genres { get; set; }
     public DbSet<ModerationRequest> ModerationRequests { get; set; }
     public DbSet<BlockchainTransaction> BlockchainTransactions { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
     void IDbWriter.Add<TEntity>(TEntity entity)
     {

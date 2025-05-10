@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Readora.API.DtoModels;
@@ -8,13 +9,13 @@ namespace Readora.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BooksController(ReadoraDbContext _context) : ControllerBase
+public class BooksController(ReadoraDbContext context, IWebHostEnvironment env) : ControllerBase
 {
     // GET: api/Books
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Book>>> GetBooks([FromQuery] string? genre)
     {
-        var query = _context.Books
+        var query = context.Books
             .Include(b => b.Genres)
             .Include(b => b.Author)
             .AsQueryable();
@@ -47,7 +48,7 @@ public class BooksController(ReadoraDbContext _context) : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Book>> GetBook(int id)
     {
-        var book = await _context.Books
+        var book = await context.Books
             .AsNoTracking()
             .Include(b => b.Genres)
             .Include(b => b.Author)
@@ -85,11 +86,11 @@ public class BooksController(ReadoraDbContext _context) : ControllerBase
             return BadRequest();
         }
 
-        _context.Entry(book).State = EntityState.Modified;
+        context.Entry(book).State = EntityState.Modified;
 
         try
         {
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -109,8 +110,8 @@ public class BooksController(ReadoraDbContext _context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Book>> PostBook(Book book)
     {
-        _context.Books.Add(book);
-        await _context.SaveChangesAsync();
+        context.Books.Add(book);
+        await context.SaveChangesAsync();
 
         return CreatedAtAction("GetBook", new { id = book.Id }, book);
     }
@@ -119,20 +120,38 @@ public class BooksController(ReadoraDbContext _context) : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteBook(int id)
     {
-        var book = await _context.Books.FindAsync(id);
+        var book = await context.Books.FindAsync(id);
         if (book == null)
         {
             return NotFound();
         }
 
-        _context.Books.Remove(book);
-        await _context.SaveChangesAsync();
+        context.Books.Remove(book);
+        await context.SaveChangesAsync();
 
         return NoContent();
     }
 
+    [HttpGet("{id:int}/text")]
+    public async Task<IActionResult> GetBookText(int id)
+    {
+        var book = await context.Books.FindAsync(id);
+        if (book == null || string.IsNullOrEmpty(book.FilePath))
+            return NotFound();
+
+        var bookPath = Path.Combine(env.ContentRootPath, book.FilePath);
+        if (!System.IO.File.Exists(bookPath))
+            return NotFound();
+
+        var encoding = Encoding.GetEncoding("windows-1251");
+        var text = await System.IO.File.ReadAllTextAsync(bookPath, encoding);
+
+        return Ok(new { content = text });
+    }
+
+    
     private bool BookExists(int id)
     {
-        return _context.Books.Any(e => e.Id == id);
+        return context.Books.Any(e => e.Id == id);
     }
 }

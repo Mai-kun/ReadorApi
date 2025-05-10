@@ -1,4 +1,6 @@
-﻿namespace Readora.Services;
+﻿using Readora.Services.Abstractions;
+
+namespace Readora.Services;
 
 public class PasswordHasher : IPasswordHasher
 {

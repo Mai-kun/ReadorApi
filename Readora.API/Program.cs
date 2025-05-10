@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +63,7 @@ if (app.Environment.IsDevelopment())
     );
 }
 
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 if (app.Environment.IsProduction())
 {
     app.UseStaticFiles(new StaticFileOptions {
