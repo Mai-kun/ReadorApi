@@ -131,7 +131,10 @@ public class UsersController : ControllerBase
             Id = book.Id,
             Title = book.Title,
             CoverUrl = $"{Request.Scheme}://{Request.Host}/{book.CoverImagePath}",
-            UploadDate = book.UploadDate
+            UploadDate = book.UploadDate,
+            Author = book.Author.Username,
+            Genres = book.Genres.Select(g => g.Name).ToList(),
+            PublicationYear = 0
         };
     }
 }

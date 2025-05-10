@@ -18,12 +18,12 @@ public class BooksController(ReadoraDbContext _context) : ControllerBase
             .Include(b => b.Genres)
             .Include(b => b.Author)
             .AsQueryable();
-        
+
         if (!string.IsNullOrEmpty(genre))
         {
             query = query.Where(b => b.Genres.Any(g => g.Name == genre));
         }
-        
+
         var books = await query
             .Select(b => new BookDto
             {
@@ -32,8 +32,11 @@ public class BooksController(ReadoraDbContext _context) : ControllerBase
                 Author = b.Author.Username,
                 Description = b.Description ?? "",
                 CoverUrl = $"{Request.Scheme}://{Request.Host}/{b.CoverImagePath.TrimStart('/')}",
-                Genres = b.Genres.Select(g => g.Name).ToList(),
-                UploadDate = b.UploadDate
+                Genres = b.Genres.Select(g => g.Name)
+                    .ToList(),
+                UploadDate = b.UploadDate,
+                PublicationYear = b.PublicationYear,
+                Isbn = b.Isbn
             })
             .ToListAsync();
 
@@ -44,14 +47,32 @@ public class BooksController(ReadoraDbContext _context) : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Book>> GetBook(int id)
     {
-        var book = await _context.Books.FindAsync(id);
+        var book = await _context.Books
+            .AsNoTracking()
+            .Include(b => b.Genres)
+            .Include(b => b.Author)
+            .FirstOrDefaultAsync(book => book.Id == id);
 
-        if (book == null)
+        if (book is null)
         {
             return NotFound();
         }
 
-        return book;
+        var response = new BookDto
+        {
+            Id = book.Id,
+            Title = book.Title,
+            Author = book.Author.Username,
+            Description = book.Description ?? "",
+            CoverUrl = $"{Request.Scheme}://{Request.Host}/{book.CoverImagePath.TrimStart('/')}",
+            Genres = book.Genres.Select(g => g.Name)
+                .ToList(),
+            UploadDate = book.UploadDate,
+            PublicationYear = book.PublicationYear,
+            Isbn = book.Isbn
+        };
+
+        return Ok(response);
     }
 
     // PUT: api/Books/5

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Readora.DataBase;
@@ -11,9 +12,11 @@ using Readora.DataBase;
 namespace Readora.DataBase.Migrations
 {
     [DbContext(typeof(ReadoraDbContext))]
-    partial class ReadoraDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250510005506_AddPropForBook")]
+    partial class AddPropForBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

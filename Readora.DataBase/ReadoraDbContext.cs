@@ -4,18 +4,14 @@ using Readora.Models;
 
 namespace Readora.DataBase;
 
+
 /// <remarks>
 ///     dotnet tool install --global dotnet-ef
-///     dotnet ef migrations add Init --project Readora.DataBase\Readora.DataBase.csproj
-///     dotnet ef database update --project Readora.DataBase\Readora.DataBase.csproj
+///     dotnet ef migrations add Init --project Readora.DataBase\Readora.DataBase.csproj --startup-project Readora.API\Readora.API.csproj
+///     dotnet ef database update --project Readora.DataBase\Readora.DataBase.csproj --startup-project .\Readora.API\Readora.API.csproj
 /// </remarks>
 public class ReadoraDbContext : DbContext, IDbWriter, IDbReader, IUnitOfWork
 {
-    /// <remarks>
-    ///     dotnet tool install --global dotnet-ef
-    ///     dotnet ef migrations add Init --project Readora.DataBase\Readora.DataBase.csproj --startup-project \Readora.API\Readora.API.csproj
-    ///     dotnet ef database update --project Readora.DataBase\Readora.DataBase.csproj --startup-project .\Readora.API\Readora.API.csproj
-    /// </remarks>
     public ReadoraDbContext(DbContextOptions<ReadoraDbContext> options) : base(options)
     {
     }

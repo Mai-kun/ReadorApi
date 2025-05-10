@@ -31,6 +31,10 @@ public class Book : IEntityWithIntId
     [MaxLength(25)]
     public required BookStatus Status { get; set; }
 
+    public required int PublicationYear { get; set; } = 0;
+
+    public string? Isbn { get; set; }
+
     public DateTime UploadDate { get; set; } = DateTime.UtcNow;
 
     public ICollection<Genre> Genres { get; set; } = [];
@@ -38,4 +42,7 @@ public class Book : IEntityWithIntId
     public required ModerationRequest ModerationRequest { get; set; }
 
     public required BlockchainTransaction BlockchainTransaction { get; set; }
+    
+    public string? Content { get; set; }
+    public List<Comment> Comments { get; set; } = [];
 }
