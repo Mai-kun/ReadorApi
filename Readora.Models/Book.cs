@@ -10,8 +10,9 @@ public class Book : IEntityWithIntId
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-
-    public required User Author { get; set; }
+    
+    public required Guid AuthorId { get; set; }
+    public User? Author { get; set; }
 
     [MaxLength(200)]
     public required string Title { get; set; }
@@ -29,7 +30,7 @@ public class Book : IEntityWithIntId
     public required string CoverImagePath { get; set; }
 
     [MaxLength(25)]
-    public required BookStatus Status { get; set; }
+    public required int Status { get; set; }
 
     public required int PublicationYear { get; set; } = 0;
 
@@ -39,9 +40,9 @@ public class Book : IEntityWithIntId
 
     public ICollection<Genre> Genres { get; set; } = [];
 
-    public required ModerationRequest ModerationRequest { get; set; }
+    public ModerationRequest? ModerationRequest { get; set; }
 
-    public required BlockchainTransaction BlockchainTransaction { get; set; }
+    public BlockchainTransaction? BlockchainTransaction { get; set; }
     
     public string? Content { get; set; }
     public List<Comment> Comments { get; set; } = [];

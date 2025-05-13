@@ -1,15 +1,19 @@
+using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Readora.API.DtoModels;
 using Readora.DataBase;
 using Readora.Models;
+using Readora.Models.Enums;
+using Readora.Services.Abstractions;
 
 namespace Readora.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BooksController(ReadoraDbContext context, IWebHostEnvironment env) : ControllerBase
+public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, IFileSaver fileSaver) : ControllerBase
 {
     // GET: api/Books
     [HttpGet]
@@ -30,7 +34,7 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env) 
             {
                 Id = b.Id,
                 Title = b.Title,
-                Author = b.Author.Username,
+                Author = b.Author!.Username,
                 Description = b.Description ?? "",
                 CoverUrl = $"{Request.Scheme}://{Request.Host}/{b.CoverImagePath.TrimStart('/')}",
                 Genres = b.Genres.Select(g => g.Name)
@@ -63,7 +67,7 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env) 
         {
             Id = book.Id,
             Title = book.Title,
-            Author = book.Author.Username,
+            Author = book.Author!.Username,
             Description = book.Description ?? "",
             CoverUrl = $"{Request.Scheme}://{Request.Host}/{book.CoverImagePath.TrimStart('/')}",
             Genres = book.Genres.Select(g => g.Name)
@@ -108,11 +112,45 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env) 
     // POST: api/Books
     // To protect from over-posting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Book>> PostBook(Book book)
+    [Authorize]
+    public async Task<ActionResult<Book>> PostBook([FromForm] BookUploadDto dto, CancellationToken cancellationToken)
     {
-        context.Books.Add(book);
-        await context.SaveChangesAsync();
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
 
+        var bookFile = await fileSaver.SaveFile(dto.BookFile, env.ContentRootPath, "books");
+        var coverImage = await fileSaver.SaveFile(dto.CoverImage, env.ContentRootPath,"covers");
+        
+        var book = new Book
+        {
+            Title = dto.Title,
+            Description = dto.Description,
+            PublicationYear = dto.PublicationYear,
+            Isbn = dto.Isbn,
+            FilePath = @"files\" + bookFile.filePath,
+            FileHash = bookFile.hash,
+            CoverImagePath = @"files\" + coverImage.filePath,
+            Status = (int)BookStatuses.Moderating,
+            AuthorId = Guid.Parse(userId),
+            Genres = await context.Genres.Where(g => dto.Genres.Contains(g.Id))
+                .ToListAsync(cancellationToken: cancellationToken),
+        };
+
+        
+        var bookEntity = await context.Books.AddAsync(book, cancellationToken);
+        var request = new ModerationRequest
+        {
+            BookId = 0,
+            Book = bookEntity.Entity,
+            Moderator = context.Users.FirstOrDefault(u => u!.Role.Id == 1),
+            ModerationStatus = ModerationStatus.Pending.ToString()
+        };
+        await context.ModerationRequests.AddAsync(request, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        
         return CreatedAtAction("GetBook", new { id = book.Id }, book);
     }
 

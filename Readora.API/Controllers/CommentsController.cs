@@ -27,6 +27,17 @@ public class CommentsController : ControllerBase
             .Include(c => c.User)
             .Where(c => c.BookId == bookId)
             .OrderByDescending(c => c.CreatedAt)
+            .Select(c => new
+            {
+                Id = c.Id,
+                Text = c.Text,
+                CreatedAt = c.CreatedAt,
+                User = new
+                {
+                    Name = c.User!.Username,
+                    Id = c.User!.Id,
+                },
+            })
             .ToListAsync();
 
         return Ok(comments);
@@ -47,12 +58,23 @@ public class CommentsController : ControllerBase
         {
             Text = dto.Text,
             BookId = dto.BookId,
-            UserId = Guid.Parse(userId)
+            UserId = Guid.Parse(userId),
         };
 
         await _context.Comments.AddAsync(comment);
         await _context.SaveChangesAsync();
 
         return Ok(comment);
+    }
+    
+    [HttpDelete("{id:guid}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteComment(Guid id)
+    {
+        await _context.Comments
+            .Where(c => c.Id == id)
+            .ExecuteDeleteAsync();
+
+        return Ok(new { Message = "Comment was removed"});
     }
 }

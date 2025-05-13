@@ -49,6 +49,7 @@ builder.Services.AddApiAuthentication(jwtSettings);
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFileSaver, FileSaver>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
@@ -88,8 +89,11 @@ static FileExtensionContentTypeProvider CreateContentTypeProvider()
     {
         Mappings =
         {
-            [".webp"] = "image/webp"
+            [".webp"] = "image/webp",
+            [".jpg"] = "image/webp",
+            [".png"] = "image/webp"
         }
     };
+
     return provider;
 }

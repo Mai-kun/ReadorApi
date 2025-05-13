@@ -15,7 +15,7 @@ public class ModerationRequest : IEntityWithGuidId
     
     public required Book Book { get; set; }
 
-    public required User Moderator { get; set; }
+    public required User? Moderator { get; set; }
 
     public required string ModerationStatus { get; set; }
 
