@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Readora.DataBase;
@@ -11,9 +12,11 @@ using Readora.DataBase;
 namespace Readora.DataBase.Migrations
 {
     [DbContext(typeof(ReadoraDbContext))]
-    partial class ReadoraDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513232538_moderatorId can be null")]
+    partial class moderatorIdcanbenull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,6 +43,7 @@ namespace Readora.DataBase.Migrations
             modelBuilder.Entity("Readora.Models.BlockchainTransaction", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<int>("BookId")

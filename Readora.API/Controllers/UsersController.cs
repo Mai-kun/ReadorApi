@@ -44,7 +44,7 @@ public class UsersController : ControllerBase
             CreatedAt = user.CreatedAt,
             PublicKey = user.PublicKey ?? "",
             TotalBooks = user.Books?.Count ?? 0,
-            Books = user.Books?.Select(MapToBookDto).ToList() ?? []
+            Books = user.Books?.Select(MapToBookDto).ToList() ?? [],
         };
     }
 
@@ -71,7 +71,7 @@ public class UsersController : ControllerBase
             CreatedAt = user.CreatedAt,
             PublicKey = user.PublicKey ?? "",
             TotalBooks = user.Books?.Count ?? 0,
-            Books = user.Books?.Select(MapToBookDto).ToList() ?? []
+            Books = user.Books?.Select(MapToBookDto).ToList() ?? [],
         };
     }
     
@@ -134,7 +134,7 @@ public class UsersController : ControllerBase
             UploadDate = book.UploadDate,
             Author = book.Author.Username,
             Genres = book.Genres.Select(g => g.Name).ToList(),
-            PublicationYear = 0
+            PublicationYear = 0,
         };
     }
 }

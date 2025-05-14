@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Readora.Models.Abstractions;
+using Readora.Models.Enums;
 
 namespace Readora.Models;
 
@@ -15,14 +16,14 @@ public class ModerationRequest : IEntityWithGuidId
     
     public required Book Book { get; set; }
 
-    public required User? Moderator { get; set; }
+    public Guid? ModeratorId { get; set; }
+    public User? Moderator { get; set; }
 
-    public required string ModerationStatus { get; set; }
+    public ModerationStatus Status { get; set; }
 
     [MaxLength(3000)]
-    public string? Comment { get; set; }
+    public string? ModeratorComment { get; set; }
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    public DateTime? ResolvedAt { get; set; }
+    public DateTime RequestDate { get; set; }
+    public DateTime? DecisionDate { get; set; }
 }

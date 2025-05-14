@@ -28,7 +28,7 @@ public static class ApiExtensions
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtOptions.Key))
+                        Encoding.UTF8.GetBytes(jwtOptions.Key)),
                 };
 
                 options.Events = new JwtBearerEvents
@@ -38,10 +38,13 @@ public static class ApiExtensions
                         context.Token = context.Request.Cookies[nameof(StringLiterals.TastyCookies)];
                         
                         return Task.CompletedTask;
-                    }
+                    },
                 };
             });
         
+        services.AddAuthorizationBuilder()
+            .AddPolicy("ModeratorOnly", policy => 
+                policy.RequireRole("Moderator", "Admin"));
         services.AddAuthorization();
     }
 }

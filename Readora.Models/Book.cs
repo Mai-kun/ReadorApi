@@ -29,9 +29,6 @@ public class Book : IEntityWithIntId
     [MaxLength(512)]
     public required string CoverImagePath { get; set; }
 
-    [MaxLength(25)]
-    public required int Status { get; set; }
-
     public required int PublicationYear { get; set; } = 0;
 
     public string? Isbn { get; set; }
@@ -44,6 +41,5 @@ public class Book : IEntityWithIntId
 
     public BlockchainTransaction? BlockchainTransaction { get; set; }
     
-    public string? Content { get; set; }
     public List<Comment> Comments { get; set; } = [];
 }

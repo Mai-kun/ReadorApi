@@ -52,6 +52,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileSaver, FileSaver>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -71,7 +73,7 @@ if (app.Environment.IsProduction())
         FileProvider = new PhysicalFileProvider(
             Path.Combine(builder.Environment.ContentRootPath, "files")),
         RequestPath = "/files",
-        ContentTypeProvider = CreateContentTypeProvider()
+        ContentTypeProvider = CreateContentTypeProvider(),
     });
 }
 
@@ -91,8 +93,8 @@ static FileExtensionContentTypeProvider CreateContentTypeProvider()
         {
             [".webp"] = "image/webp",
             [".jpg"] = "image/webp",
-            [".png"] = "image/webp"
-        }
+            [".png"] = "image/webp",
+        },
     };
 
     return provider;

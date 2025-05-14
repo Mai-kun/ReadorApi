@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Readora.DataBase;
@@ -11,9 +12,11 @@ using Readora.DataBase;
 namespace Readora.DataBase.Migrations
 {
     [DbContext(typeof(ReadoraDbContext))]
-    partial class ReadoraDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513220116_Update Moderation")]
+    partial class UpdateModeration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +43,11 @@ namespace Readora.DataBase.Migrations
             modelBuilder.Entity("Readora.Models.BlockchainTransaction", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<long>("BlockNumber")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("BookId")
                         .HasColumnType("integer");
@@ -76,6 +83,9 @@ namespace Readora.DataBase.Migrations
                     b.Property<Guid>("AuthorId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
                     b.Property<string>("CoverImagePath")
                         .IsRequired()
                         .HasMaxLength(512)
@@ -99,6 +109,10 @@ namespace Readora.DataBase.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("PublicationYear")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasMaxLength(25)
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Readora.DataBase;
@@ -11,9 +12,11 @@ using Readora.DataBase;
 namespace Readora.DataBase.Migrations
 {
     [DbContext(typeof(ReadoraDbContext))]
-    partial class ReadoraDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513231805_UpdateModerationRules")]
+    partial class UpdateModerationRules
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,6 +43,7 @@ namespace Readora.DataBase.Migrations
             modelBuilder.Entity("Readora.Models.BlockchainTransaction", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<int>("BookId")
@@ -207,7 +211,7 @@ namespace Readora.DataBase.Migrations
                         .HasMaxLength(3000)
                         .HasColumnType("character varying(3000)");
 
-                    b.Property<Guid?>("ModeratorId")
+                    b.Property<Guid>("ModeratorId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("RequestDate")
@@ -377,7 +381,9 @@ namespace Readora.DataBase.Migrations
 
                     b.HasOne("Readora.Models.User", "Moderator")
                         .WithMany()
-                        .HasForeignKey("ModeratorId");
+                        .HasForeignKey("ModeratorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Book");
 

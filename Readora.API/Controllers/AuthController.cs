@@ -51,13 +51,13 @@ public class AuthController : ControllerBase
                 Role = new RoleDto 
                 {
                     Id = user.Role.Id,
-                    Name = user.Role.Name
-                }
+                    Name = user.Role.Name,
+                },
             };
         
             return Ok(new { 
                 Message = "Login successful", 
-                User = userDto 
+                User = userDto,
             });
         }
         catch (UnauthorizedAccessException)
@@ -73,14 +73,14 @@ public class AuthController : ControllerBase
         {
             Secure = true,
             SameSite = SameSiteMode.None,
-            Expires = DateTimeOffset.UnixEpoch
+            Expires = DateTimeOffset.UnixEpoch,
         });
         
         HttpContext.Response.Cookies.Delete(nameof(StringLiterals.UserId),  new CookieOptions 
         {
             Secure = true,
             SameSite = SameSiteMode.None,
-            Expires = DateTimeOffset.UnixEpoch
+            Expires = DateTimeOffset.UnixEpoch,
         });
     
         return Ok(new { message = "Logout successful" });
@@ -111,8 +111,8 @@ public class AuthController : ControllerBase
                 Role = new RoleDto 
                 {
                     Id = user.Role.Id,
-                    Name = user.Role.Name
-                }
+                    Name = user.Role.Name,
+                },
             };
         
             return Ok(userDto);
@@ -130,7 +130,7 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,
-            Path = "/"
+            Path = "/",
         });
     }
 }

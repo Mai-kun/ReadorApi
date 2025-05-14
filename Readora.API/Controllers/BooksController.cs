@@ -41,7 +41,7 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
                     .ToList(),
                 UploadDate = b.UploadDate,
                 PublicationYear = b.PublicationYear,
-                Isbn = b.Isbn
+                Isbn = b.Isbn,
             })
             .ToListAsync();
 
@@ -74,7 +74,7 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
                 .ToList(),
             UploadDate = book.UploadDate,
             PublicationYear = book.PublicationYear,
-            Isbn = book.Isbn
+            Isbn = book.Isbn,
         };
 
         return Ok(response);
@@ -133,7 +133,6 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
             FilePath = @"files\" + bookFile.filePath,
             FileHash = bookFile.hash,
             CoverImagePath = @"files\" + coverImage.filePath,
-            Status = (int)BookStatuses.Moderating,
             AuthorId = Guid.Parse(userId),
             Genres = await context.Genres.Where(g => dto.Genres.Contains(g.Id))
                 .ToListAsync(cancellationToken: cancellationToken),
@@ -143,10 +142,9 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
         var bookEntity = await context.Books.AddAsync(book, cancellationToken);
         var request = new ModerationRequest
         {
-            BookId = 0,
+            BookId = bookEntity.Entity.Id,
             Book = bookEntity.Entity,
-            Moderator = context.Users.FirstOrDefault(u => u!.Role.Id == 1),
-            ModerationStatus = ModerationStatus.Pending.ToString()
+            Status = ModerationStatus.Pending,
         };
         await context.ModerationRequests.AddAsync(request, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);

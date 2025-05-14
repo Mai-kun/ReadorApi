@@ -8,17 +8,15 @@ namespace Readora.Models;
 public class BlockchainTransaction : IEntityWithGuidId
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     public required int BookId { get; set; }
     
-    public required Book Book { get; set; }
+    public Book? Book { get; set; }
 
     [MaxLength(255)]
     public required string TransactionHash { get; set; }
-
-    public required long BlockNumber { get; set; }
 
     public required DateTime Timestamp { get; set; }
 }

@@ -40,7 +40,7 @@ public class AuthService : IAuthService
             Credential = new UserCredential
             {
                 PasswordHash = _passwordHasher.HashPassword(request.Password),
-            }
+            },
         };
 
         await _context.Users.AddAsync(user);
@@ -80,7 +80,7 @@ public class AuthService : IAuthService
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.Name)
+            new Claim(ClaimTypes.Role, user.Role.Name),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
