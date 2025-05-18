@@ -19,19 +19,11 @@ public class UsersController : ControllerBase
         _context = context;
     }
 
-    // GET: api/Users
-    // [HttpGet]
-    // public async Task<List<Models.User>> GetUsers()
-    // {
-    //     return await _context.Users.ToListAsync();
-    // }
-
     // GET: api/Users/5
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<UserProfileDto>> GetUser(Guid id)
     {
         var user = await _context.Users
-            .Include(u => u.Credential)
             .Include(u => u.Books)
             .FirstOrDefaultAsync(u => u.Id == id);
 
@@ -58,8 +50,11 @@ public class UsersController : ControllerBase
         }
         
         var user = await _context.Users
-            .Include(u => u.Credential)
-            .Include(u => u.Books)
+            .AsNoTracking()
+            .Include(u => u.Books)!
+                .ThenInclude(b => b.Genres)
+            .Include(u => u.Books)!
+                .ThenInclude(b => b.ModerationRequest)
             .FirstOrDefaultAsync(u => u.Id == Guid.Parse(userId));
 
         if (user == null) return NotFound();
@@ -132,9 +127,11 @@ public class UsersController : ControllerBase
             Title = book.Title,
             CoverUrl = $"{Request.Scheme}://{Request.Host}/{book.CoverImagePath}",
             UploadDate = book.UploadDate,
+            AuthorId = book.Author.Id,
             Author = book.Author.Username,
             Genres = book.Genres.Select(g => g.Name).ToList(),
             PublicationYear = 0,
+            Status = book.ModerationRequest?.Status.ToString(),
         };
     }
 }

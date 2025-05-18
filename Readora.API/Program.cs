@@ -27,7 +27,8 @@ builder.Services.AddCors(options => {
     {
         policy.WithOrigins(
                 "http://localhost:3000",
-                "https://localhost:3000"
+                "https://localhost:3000",
+                "https://mai-kun.github.io"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()

@@ -85,10 +85,5 @@ public class ReadoraDbContext : DbContext, IDbWriter, IDbReader, IUnitOfWork
             .HasIndex(u => new { u.TransactionHash })
             .IsUnique()
             .HasFilter("\"TransactionHash\" IS NOT NULL");
-        
-        modelBuilder.Entity<BookStatus>()
-            .HasIndex(u => new { u.Name })
-            .IsUnique()
-            .HasFilter("\"Name\" IS NOT NULL");
     }
 }

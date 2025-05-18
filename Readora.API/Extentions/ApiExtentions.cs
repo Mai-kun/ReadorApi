@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Readora.API.Handlers;
 using Readora.Models;
 using Readora.Models.Authentification;
 
@@ -41,10 +43,14 @@ public static class ApiExtensions
                     },
                 };
             });
-        
+
         services.AddAuthorizationBuilder()
             .AddPolicy("ModeratorOnly", policy => 
-                policy.RequireRole("Moderator", "Admin"));
+                policy.RequireRole("Moderator", "Admin"))
+            .AddPolicy("BookAccess", policy => 
+                policy.Requirements.Add(new BookAccessRequirement(true)));
+        
+        services.AddSingleton<IAuthorizationHandler, BookAccessHandler>();
         services.AddAuthorization();
     }
 }

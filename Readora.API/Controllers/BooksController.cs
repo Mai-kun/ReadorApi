@@ -13,7 +13,11 @@ namespace Readora.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, IFileSaver fileSaver) : ControllerBase
+public class BooksController(
+    ReadoraDbContext context,
+    IWebHostEnvironment env,
+    IFileSaver fileSaver,
+    IAuthorizationService authorizationService) : ControllerBase
 {
     // GET: api/Books
     [HttpGet]
@@ -22,7 +26,7 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
         var query = context.Books
             .Include(b => b.Genres)
             .Include(b => b.Author)
-            .AsQueryable();
+            .Where(b => b.ModerationRequest!.Status == ModerationStatus.Approved);
 
         if (!string.IsNullOrEmpty(genre))
         {
@@ -34,7 +38,8 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
             {
                 Id = b.Id,
                 Title = b.Title,
-                Author = b.Author!.Username,
+                AuthorId = b.Author.Id,
+                Author = b.Author.Username,
                 Description = b.Description ?? "",
                 CoverUrl = $"{Request.Scheme}://{Request.Host}/{b.CoverImagePath.TrimStart('/')}",
                 Genres = b.Genres.Select(g => g.Name)
@@ -42,6 +47,7 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
                 UploadDate = b.UploadDate,
                 PublicationYear = b.PublicationYear,
                 Isbn = b.Isbn,
+                Status = b.ModerationRequest!.Status.ToString(),
             })
             .ToListAsync();
 
@@ -50,12 +56,14 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
 
     // GET: api/Books/5
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<ActionResult<Book>> GetBook(int id)
     {
         var book = await context.Books
             .AsNoTracking()
             .Include(b => b.Genres)
             .Include(b => b.Author)
+            .Include(b => b.ModerationRequest)
             .FirstOrDefaultAsync(book => book.Id == id);
 
         if (book is null)
@@ -63,10 +71,15 @@ public class BooksController(ReadoraDbContext context, IWebHostEnvironment env, 
             return NotFound();
         }
 
+        var result = await authorizationService.AuthorizeAsync(User, book, "BookAccess");
+        if (!result.Succeeded)
+            return Forbid();
+        
         var response = new BookDto
         {
             Id = book.Id,
             Title = book.Title,
+            AuthorId = book.Author.Id,
             Author = book.Author!.Username,
             Description = book.Description ?? "",
             CoverUrl = $"{Request.Scheme}://{Request.Host}/{book.CoverImagePath.TrimStart('/')}",
