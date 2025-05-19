@@ -21,7 +21,9 @@ public class BooksController(
 {
     // GET: api/Books
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Book>>> GetBooks([FromQuery] string? genre)
+    public async Task<ActionResult<IEnumerable<Book>>> GetBooks(
+        [FromQuery] string? genre = null,
+        [FromQuery] string? search = null)
     {
         var query = context.Books
             .Include(b => b.Genres)
@@ -33,6 +35,14 @@ public class BooksController(
             query = query.Where(b => b.Genres.Any(g => g.Name == genre));
         }
 
+        if (!string.IsNullOrEmpty(search))
+        {
+            query = query.Where(b => 
+                b.Title.Contains(search) ||
+                b.Author.Username.Contains(search)
+            );
+        }
+        
         var books = await query
             .Select(b => new BookDto
             {
