@@ -52,7 +52,7 @@ namespace Readora.API.Controllers
             return await ProcessModeration(bookId, dto, ModerationStatus.Approved);
         }
         
-        [HttpPost("reject/{bookId}")]
+        [HttpPost("reject/{bookId:int}")]
         public async Task<IActionResult> RejectBook(
             int bookId,
             [FromBody] ModerationDecisionDto dto)
@@ -112,8 +112,6 @@ namespace Readora.API.Controllers
                 Timestamp = DateTime.UtcNow,
             };
 
-            Console.WriteLine($"Tx Hash: {txHash}");
-            
             await context.BlockchainTransactions.AddAsync(transaction);
             await context.SaveChangesAsync();
         }

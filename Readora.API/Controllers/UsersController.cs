@@ -52,9 +52,10 @@ public class UsersController : ControllerBase
         var user = await _context.Users
             .AsNoTracking()
             .Include(u => u.Books)!
-                .ThenInclude(b => b.Genres)
+            .ThenInclude(b => b.Genres)
             .Include(u => u.Books)!
-                .ThenInclude(b => b.ModerationRequest)
+            .ThenInclude(b => b.ModerationRequest)
+            .Include(user => user.Role)
             .FirstOrDefaultAsync(u => u.Id == Guid.Parse(userId));
 
         if (user == null) return NotFound();
@@ -67,6 +68,7 @@ public class UsersController : ControllerBase
             PublicKey = user.PublicKey ?? "",
             TotalBooks = user.Books?.Count ?? 0,
             Books = user.Books?.Select(MapToBookDto).ToList() ?? [],
+            Role = user.Role.Name,
         };
     }
     

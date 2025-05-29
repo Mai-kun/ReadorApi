@@ -10,4 +10,5 @@ public class UserProfileDto
     public int TotalBooks { get; set; }
     public DateTime? LastPasswordChange { get; set; } // Из Credential
     public List<BookDto> Books { get; set; }
+    public string Role { get; set; }
 }

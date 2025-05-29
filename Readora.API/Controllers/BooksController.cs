@@ -59,6 +59,7 @@ public class BooksController(
                 Isbn = b.Isbn,
                 Status = b.ModerationRequest!.Status.ToString(),
             })
+            .OrderBy(b => b.Title)
             .ToListAsync();
 
         return Ok(books);
@@ -167,6 +168,7 @@ public class BooksController(
         {
             BookId = bookEntity.Entity.Id,
             Book = bookEntity.Entity,
+            RequestDate = DateTime.UtcNow,
             Status = ModerationStatus.Pending,
         };
         await context.ModerationRequests.AddAsync(request, cancellationToken);
@@ -202,8 +204,7 @@ public class BooksController(
         if (!System.IO.File.Exists(bookPath))
             return NotFound();
 
-        var encoding = Encoding.GetEncoding("windows-1251");
-        var text = await System.IO.File.ReadAllTextAsync(bookPath, encoding);
+        var text = await System.IO.File.ReadAllTextAsync(bookPath, Encoding.UTF8);
 
         return Ok(new { content = text });
     }
