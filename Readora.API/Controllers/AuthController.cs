@@ -24,13 +24,20 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request, CancellationToken token)
     {
-        var jwtToken = await _authService.RegisterAsync(request);
-        SetCookie(nameof(StringLiterals.TastyCookies), jwtToken);
-        
-        var user = await _userService.GetUserByEmailAsync(request.Email, token);
-        SetCookie(nameof(StringLiterals.UserId), user!.Id.ToString());
-        
-        return Ok(new { message = "Registration successful" });
+        try
+        {
+            var jwtToken = await _authService.RegisterAsync(request);
+            SetCookie(nameof(StringLiterals.TastyCookies), jwtToken);
+
+            var user = await _userService.GetUserByEmailAsync(request.Email, token);
+            SetCookie(nameof(StringLiterals.UserId), user!.Id.ToString());
+
+            return Ok(new { message = "Registration successful" });
+        }
+        catch (ArgumentException e)
+        {
+            return new BadRequestObjectResult(e.Message);
+        }
     }
 
     [HttpPost("login")]
@@ -39,24 +46,25 @@ public class AuthController : ControllerBase
         try
         {
             var (jwtToken, user) = await _authService.LoginAsync(request);
-            
+
             SetCookie(nameof(StringLiterals.TastyCookies), jwtToken);
             SetCookie(nameof(StringLiterals.UserId), user.Id.ToString());
 
-            var userDto = new UserDto 
+            var userDto = new UserDto
             {
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
-                Role = new RoleDto 
+                Role = new RoleDto
                 {
                     Id = user.Role.Id,
                     Name = user.Role.Name,
                 },
             };
-        
-            return Ok(new { 
-                Message = "Login successful", 
+
+            return Ok(new
+            {
+                Message = "Login successful",
                 User = userDto,
             });
         }
@@ -65,35 +73,35 @@ public class AuthController : ControllerBase
             return new UnauthorizedResult();
         }
     }
-    
+
     [HttpPost("logout")]
     public IActionResult Logout(CancellationToken token)
     {
-        HttpContext.Response.Cookies.Delete(nameof(StringLiterals.TastyCookies),  new CookieOptions 
+        HttpContext.Response.Cookies.Delete(nameof(StringLiterals.TastyCookies), new CookieOptions
         {
             Secure = true,
             SameSite = SameSiteMode.None,
             Expires = DateTimeOffset.UnixEpoch,
         });
-        
-        HttpContext.Response.Cookies.Delete(nameof(StringLiterals.UserId),  new CookieOptions 
+
+        HttpContext.Response.Cookies.Delete(nameof(StringLiterals.UserId), new CookieOptions
         {
             Secure = true,
             SameSite = SameSiteMode.None,
             Expires = DateTimeOffset.UnixEpoch,
         });
-    
+
         return Ok(new { message = "Logout successful" });
     }
-    
+
     [HttpGet("check")]
     public async Task<IActionResult> CheckAuth(CancellationToken cancellationToken)
     {
-        try 
+        try
         {
             if (!HttpContext.Request.Cookies.TryGetValue(nameof(StringLiterals.UserId), out var userId))
             {
-                return Unauthorized(); 
+                return Unauthorized();
             }
 
             var user = await _userService.GetUserById(Guid.Parse(userId), cancellationToken);
@@ -102,19 +110,19 @@ public class AuthController : ControllerBase
             {
                 return Unauthorized();
             }
-        
-            var userDto = new UserDto 
+
+            var userDto = new UserDto
             {
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
-                Role = new RoleDto 
+                Role = new RoleDto
                 {
                     Id = user.Role.Id,
                     Name = user.Role.Name,
                 },
             };
-        
+
             return Ok(userDto);
         }
         catch (Exception)

@@ -30,7 +30,7 @@ public class AuthService : IAuthService
     async Task<string> IAuthService.RegisterAsync(RegisterRequest request)
     {
         if (await _context.Users.AsNoTracking().AnyAsync(u => u.Email == request.Email))
-            throw new ArgumentException("Email already exists");
+            throw new ArgumentException("Такой Email уже занят ");
 
         var user = new User
         {
