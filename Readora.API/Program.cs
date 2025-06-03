@@ -52,8 +52,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileSaver, FileSaver>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
-
-
+builder.Services.AddSingleton<BlockchainService>();
 
 var app = builder.Build();
 

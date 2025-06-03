@@ -1,4 +1,6 @@
-﻿using Nethereum.Web3;
+﻿using System.Numerics;
+using Nethereum.ABI.FunctionEncoding.Attributes;
+using Nethereum.Web3;
 // ReSharper disable ConvertConstructorToMemberInitializers
 
 namespace Readora.Services;
@@ -13,7 +15,7 @@ public class BlockchainService
     public BlockchainService()
     {
         _web3 = new Web3("http://localhost:7545"); 
-        _contractAddress = "0x78A00618Dd898EaFc817F9CC15D3c51225401136";
+        _contractAddress = "0xE24acB9a826102A20F1Cd1035a8E4Eb50F3d3493";
         _abi = """
                [{"inputs": [
                		{
@@ -169,5 +171,33 @@ public class BlockchainService
 	        Console.WriteLine($"Error: {ex.Message}");
 	        return null;
         }
+    }
+    
+    public async Task<BigInteger> GetBookCount()
+    {
+	    var contract = _web3.Eth.GetContract(_abi, _contractAddress);
+	    var function = contract.GetFunction("bookCount");
+	    return await function.CallAsync<BigInteger>();
+    }
+
+    public async Task<List<object>> GetBook(BigInteger id)
+    {
+	    var contract = _web3.Eth.GetContract(_abi, _contractAddress);
+	    var function = contract.GetFunction("getBook");
+    
+	    var result = await function.CallDeserializingToObjectAsync<BookResult>(id);
+	    return [result.Id, result.Title, result.FileHash];
+    }
+
+    private class BookResult
+    {
+	    [Parameter("uint256", "id", 1)]
+	    public BigInteger Id { get; set; }
+
+	    [Parameter("string", "title", 2)]
+	    public string Title { get; set; }
+
+	    [Parameter("string", "fileHash", 3)]
+	    public string FileHash { get; set; }
     }
 }
