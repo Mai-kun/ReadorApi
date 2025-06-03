@@ -20,7 +20,9 @@ public class GenresController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
     {
-        return await _context.Genres.ToListAsync();
+        return await _context.Genres
+            .OrderBy(g => g.Name)
+            .ToListAsync();
     }
 
     // GET: api/Genres/5
